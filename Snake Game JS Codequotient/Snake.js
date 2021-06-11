@@ -18,43 +18,65 @@ function Snake() {
 Snake.prototype = new SnakeWorldObject();
 
 Snake.prototype.setupSnake = function(maxX, maxY) {
+    var numsec = NUM_INITIAL_SECTIONS;
   // Set snake's starting coordinates
     // this.setX(Math.floor(Math.random() * maxX));
     // this.setY(Math.floor(Math.random() * maxY));
-    this.setX(12);
-    this.setY(12);
-    var section = [this.getX(),this.getY()]
-    var section2 = [this.getX(),this.getY()-1]
-    var section3 = [this.getX(),this.getY()-2]
-    this.sections[0] = section3; 
-    this.sections.push(section2);   
-    this.sections.push(section);
+    var X = Math.floor(maxX / 2);
+    var Y = Math.floor(maxY / 2);
+    this.setX(X);
+    this.setY(Y);
+      for (var i = 1; i < numsec+1; i++) {
+        var y = Y + 1;
+        this.sections.unshift(new SnakeSection(X, y));
+    }
+    // var section = [this.getX(),this.getY()]
+    // var section2 = [this.getX(),this.getY()-1]
+    // var section3 = [this.getX(),this.getY()-2]
+    // this.sections[0] = section3; 
+    // this.sections.push(section2);   
+    // this.sections.push(section);
   // create initial number of snake sections (snake length)
 };
-var first =0;
+
 Snake.prototype.hasCollided = function(maxX, maxY) {
   // Check if snake has collided with itself or board boundaries.
   console.log(this.sections)
-    var present = false;
-  if(first == 1){
-  for (var a=0; a<this.sections.length-1; a++)
-  {
-  if (this.sections[a][0] == this.getX() && this.sections[a][1] == this.getY()) {present = true}
-  }
-}
-  first =1;
-  console.log(present);
-  if(this.getX() < 0 || this.getY() < 0 || this.getX() >= maxX || this.getY() >= maxY || present)
+    if(this.getX() < 0 || this.getY() < 0 || this.getX() >= maxX || this.getY() >= maxY)
+    {
   return true;
-  else return false;
+    }
+    // for (var i=0; i<this.sections.length-1; i++)
+    // {
+    // if ((this.sections[i][0] == this.getX() && this.sections[i][1] == this.getY())) {return true}
+    // }
+  for(var i = 0; i < this.sections.length-1; i++){
+      if(this.isSameLocation(this.sections[i]))
+      return true;
+  }
+//   for(var i = 0; i < this.sections.length; i++){
+//       if(this.isSameLocation(this.sections[i]))
+//       return true;
+//   }    
+      return false;
 };
+// Snake.prototype.hasCollided = function(maxX, maxY) {
+//   // Check if snake has collided with itself or board boundaries.
+//     if(this.getX() < 0 || this.getY() < 0 || this.getX() >= maxX || this.getY() >= maxY)
+//     {
+//   return true;
+//     }
+
+//   for(var i = 0; i < this.sections.length; i++){
+//       if(this.isSameLocation(this.sections[i]))
+//       return true;
+//   }
+//   return false;
+// };
 
 Snake.prototype.endMove = function(didGrow) {
   if (!didGrow) {
      this.sections.shift();
-  }
-  else{
-           NUM_INITIAL_SECTIONS++;
   }
 };
 // Snake.prototype.endMove = function(didGrow) {
@@ -90,7 +112,7 @@ Snake.prototype.startMove = function() {
 
 Snake.prototype.draw = function(context, spacing) {
   // Draw the complete snake
-  for(var i=0; i<NUM_INITIAL_SECTIONS; i++)
+  for(var i=0; i<this.sections.length; i++)
   {
 //    var hear = new SnakeSection(this.getX(), this.getY());
 //   hear.draw(context, spacing)
